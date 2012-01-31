@@ -4,18 +4,6 @@ require 'rubygems'
 require 'open-uri'
 require 'json'
 
-class Array
-  def self.wrap(object)
-    if object.nil?
-      []
-    elsif object.respond_to?(:to_ary)
-      object.to_ary || [object]
-    else
-      [object]
-    end
-  end
-end
-
 def input
   if ARGV.empty?
     $stdin.read
@@ -39,4 +27,4 @@ def put_hash_keys(hash, indent=1)
   end
 end
 
-put_hash_keys(Array.wrap(JSON.parse(input)).first)
+put_hash_keys([*JSON.parse(input)].first)
