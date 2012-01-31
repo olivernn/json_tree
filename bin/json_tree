@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'open-uri'
+require 'json'
+
+class Array
+  def self.wrap(object)
+    if object.nil?
+      []
+    elsif object.respond_to?(:to_ary)
+      object.to_ary || [object]
+    else
+      [object]
+    end
+  end
+end
+
+def input
+  if ARGV.empty?
+    $stdin.read
+  else
+    open(ARGV[0]).read
+  end
+end
+
+def print_key(key, level)
+  puts "#{level.times.map { |i| '|'}.join('   ')}-- #{key}"
+end
+
+def put_hash_keys(hash, indent=1)
+  hash.keys.sort.each do |key|
+    value = hash[key]
+    if value.is_a? Hash
+      put_hash_keys(value, indent+1)
+    else
+      print_key(key, indent)
+    end
+  end
+end
+
+put_hash_keys(Array.wrap(JSON.parse(input)).first)
